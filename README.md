@@ -213,7 +213,7 @@ JOIN {{ ref('stg_product_category_name_translation') }}
 
 Ensuring data quality is crucial for maintaining the integrity of the data in our data warehouse. In the staging layer, we have implemented various data quality checks to validate the data before it is transformed and loaded into the production tables. These checks help us identify and address any issues with the data, ensuring that only high-quality data is used for analysis and reporting.
 
-In the staging layer, we setup 18 tests to check all the tables data quality. For more details check out `schema.yml` under the staging folder. 
+In the staging layer, we setup 18 tests to check all the tables data quality. For more details check out `schema.yml` under the warehouse/models/staging/ folder. 
 ## Overview
 
 We use DBT's `schema.yml` file to define and configure these data quality checks. This file contains the metadata for each table, including column definitions, descriptions, and the tests to be performed.
