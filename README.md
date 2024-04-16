@@ -7,7 +7,7 @@
 3. [Data Storage and Management](#Data-Storage-and-Management)
     1. [Data Source](#3.1) 
 	2. [Data Storage](#3.2) 
-4. [ETL Process](#ETL-Process)
+4. [ELT Process](#ELT-Process)
     1. [Snowflake User Creation](#4.1) 
 	2. [Snowflake Data Import](#4.2)
 5. [Data Warehouse Architecture](#Data-Warehouse-Architecture)
@@ -34,7 +34,7 @@ This project demonstrates the construction of a scalable and efficient data ware
 - **ELT Pipeline Orchestration**: I used SQL to extract and load data into Snowflake, enabling data transformation and modeling workflows.
 - **Data Warehouse Architecture**: I designed and implemented a data warehouse using DBT, managing Slowly Changing Dimensions and documenting the data model for efficient testing and maintenance.
 
-![[ELT Architecture v2.png]]
+![ELT Architecture](https://github.com/AspiringDSer/Date-Warehouse-Implementation-in-Snowflake/assets/79289892/cde069eb-0e63-416b-8eb5-cec0709f9075)
 
 <a name='Setup-Instructions'></a>
 # Setup Instructions
@@ -128,7 +128,7 @@ For instructions on importing data into Snowflake, refer to `Snowflake Setup.md`
 # Data Warehouse Architecture 
 [Go to TOC](#top)
 
-![[ELT Architecture v2.png]]
+![ELT Architecture](https://github.com/AspiringDSer/Date-Warehouse-Implementation-in-Snowflake/assets/79289892/cde069eb-0e63-416b-8eb5-cec0709f9075)
 
 The ELT data architecture involves storing dataset files in Amazon S3, extracting data using SQL queries, and loading it into Snowflake. The loaded data is converted into source tables, and DBT is used for staging, data modeling, and managing Slowly Changing Dimensions.
 
