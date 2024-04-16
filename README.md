@@ -252,3 +252,21 @@ These data quality checks help us maintain high data quality standards and ensur
 - **Benefits**: Improve efficiency in data processing, ensure reliability, and scalability of the data architecture.
 
 These future developments aim to enhance the data architecture's capabilities, improve data accessibility and usability, and streamline data management processes for more effective and efficient data-driven decision-making.
+
+<a name='Appendix'></a>
+# Appendix
+[Go to TOC](#top)
+
+**dbt DAGs**
+![[dbtDAGs.png]]
+  
+**Snowflake Source Tables**
+  ![[snowflake_source_tables.png]]
+
+**Snowflake Staging Tables**
+![[snowflake_staging_tables.png]]
+
+**Snowflake Production Tables**
+![[snowflake_production_tables.png]]
+
+
