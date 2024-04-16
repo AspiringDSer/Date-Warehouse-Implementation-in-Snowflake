@@ -1,0 +1,19 @@
+version: 2
+
+models:
+- name: dimCustomers
+  description: "This table stores customers data"
+- name: dimOrderItems
+  description: "This table stores order items data"
+- name: dimOrderPayments
+  description: "This table stores order payments data"
+- name: dimOrderReviews
+  description: "This table stores order reviews data"
+- name: dimProducts
+  description: "This table stores products data"
+- name: dimSellers
+  description: "This table stores sellers data"
+- name: dimDate
+  description: "This table stores date data"
+- name: factOrders
+  description: "This table stores orders data"

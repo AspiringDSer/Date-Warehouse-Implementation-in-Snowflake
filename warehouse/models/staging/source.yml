@@ -1,0 +1,17 @@
+version: 2
+
+sources:
+ - name: src_snowflake
+   schema: SOURCE
+   database: OLIST
+
+   tables:
+      - name: s3_customers
+      - name: s3_geolocation
+      - name: s3_order_items
+      - name: s3_order_payments
+      - name: s3_order_reviews
+      - name: s3_orders
+      - name: s3_product_category_name_translation
+      - name: s3_products
+      - name: s3_sellers

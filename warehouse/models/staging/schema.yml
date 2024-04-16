@@ -1,0 +1,283 @@
+version: 2
+
+models:
+
+- name: stg_geolocation
+  description: "This table stores geolocation data"
+  columns:
+    - name: zipcode
+      data_type: number
+      description: "Zip Code"
+
+    - name: latitude
+      data_type: float
+      description: "Latitude"
+
+    - name: longitude
+      data_type: float
+      description: "Longitude"
+
+    - name: city_name
+      data_type: varchar
+      description: "City_Name"
+
+    - name: state
+      data_type: varchar
+      description: "State"
+
+- name: stg_customers
+  description: "This table stores customers data"
+  columns:
+    - name: customer_id
+      data_type: varchar
+      description: "The primary key for this table - PK to the orders dataset. Each order has a unique customer_id."
+      tests:
+      - unique
+      - not_null 
+
+    - name: customer_unique_id
+      data_type: varchar
+      description: "Unique identifier of a customer."
+
+    - name: customer_zip_code_prefix
+      data_type: number
+      description: "First five digits of customer zip code"
+
+    - name: customer_city
+      data_type: varchar
+      description: "customer city name"
+
+    - name: customer_state
+      data_type: varchar
+      description: "customer state"
+
+- name: stg_order_items
+  description: "This table order items data"
+  columns:
+    - name: order_id
+      data_type: varchar
+      description: "This is a foreign key for the table - Order unique identifier - FK to the orders dataset"
+      tests:
+      - relationships:
+          to: ref('stg_orders')
+          field: order_id
+      
+    - name: order_item_id
+      data_type: number
+      description: "Sequential number identifying number of items included in the same order."
+
+    - name: product_id
+      data_type: varchar
+      description: "This is a foreign key for the table - Product unique identifier - FK to the products dataset"
+      tests:
+      - relationships:
+          to: ref('stg_products')
+          field: product_id
+
+    - name: seller_id
+      data_type: varchar
+      description: "This is a foreign key for the table - Seller unique identifier - FK to the sellers dataset"
+      tests:
+      - relationships:
+          to: ref('stg_sellers')
+          field: seller_id
+
+    - name: shipping_limit_date
+      data_type: timestamp_ntz
+      description: "Shows the seller shipping limit date for handling the order over to the logistic partner."
+
+    - name: price
+      data_type: number
+      description: "Item price"
+
+    - name: freight_value
+      data_type: number
+      description: "Item freight value item (if an order has more than one item the freight value is splitted between items)"
+
+- name: stg_order_payments
+  description: "This table order payments data"
+  columns:
+    - name: order_id
+      data_type: varchar
+      description: "This is a foreign key for the table - Unique identifier of an order - FK to the orders dataset"
+      tests:
+      - relationships:
+          to: ref('stg_orders')
+          field: order_id
+
+    - name: payment_sequential
+      data_type: number
+      description: "A customer may pay an order with more than one payment method. If he does so, a sequence will be created to"
+
+    - name: payment_type
+      data_type: varchar
+      description: "Method of payment chosen by the customer."
+      tests:
+      - accepted_values:
+          values: ['credit_card', 'boleto', 'voucher', 'debit_card', 'not_defined']
+
+    - name: payment_installments
+      data_type: number
+      description: "Number of installments chosen by the customer."
+
+    - name: payment_value
+      data_type: number
+      description: "Transaction value."
+
+- name: stg_order_reviews
+  description: "This table order payments data"
+  columns:
+    - name: review_id
+      data_type: varchar
+      description: "Unique review identifier"
+
+    - name: order_id
+      data_type: varchar
+      description: "This is a foreign key for the table - Unique order identifier - FK to the orders dataset"
+      tests:
+      - relationships:
+          to: ref('stg_orders')
+          field: order_id
+
+    - name: review_score
+      data_type: number
+      description: "Note ranging from 1 to 5 given by the customer on a satisfaction survey."
+
+    - name: review_comment_title
+      data_type: varchar
+      description: "Comment title from the review left by the customer, in Portuguese."
+
+    - name: review_comment_message
+      data_type: varchar
+      description: "Comment message from the review left by the customer, in Portuguese."
+
+    - name: review_creation_date
+      data_type: timestamp_ntz
+      description: "Shows the date in which the satisfaction survey was sent to the customer."
+
+    - name: review_answer_timestamp
+      data_type: timestamp_ntz
+      description: "Shows satisfaction survey answer timestamp."
+
+- name: stg_orders
+  description: "unique identifier of the order."
+  columns:
+    - name: order_id
+      data_type: varchar
+      description: "This is a primary key for the table - Unique identifier of the order."
+      tests:
+      - unique
+      - not_null
+
+    - name: customer_id
+      data_type: varchar
+      description: "This is a foreign key for the table - Key to the customer dataset. Each order has a unique customer_id."
+      tests:
+      - relationships:
+          to: ref('stg_customers')
+          field: customer_id
+
+    - name: order_status
+      data_type: varchar
+      description: "Reference to the order status (delivered, shipped, etc)."
+      tests:
+      - accepted_values:
+          values: ['delivered', 'invoiced', 'shipped', 'processing', 'unavailable', 'canceled', 'created', 'approved']
+
+    - name: order_purchase_timestamp
+      data_type: timestamp_ntz
+      description: "Shows the purchase timestamp."
+
+    - name: order_approved_at
+      data_type: timestamp_ntz
+      description: "Shows the payment approval timestamp."
+
+    - name: order_delivered_carrier_date
+      data_type: timestamp_ntz
+      description: "Shows the order posting timestamp. When it was handled to the logistic partner."
+
+    - name: order_delivered_customer_date
+      data_type: timestamp_ntz
+      description: "Shows the actual order delivery date to the customer."
+
+    - name: order_estimated_delivery_date
+      data_type: timestamp_ntz
+      description: "Shows the estimated delivery date that was informed to customer at the purchase moment."
+
+- name: stg_product_category_name_translation
+  description: "This table translates the product_category_name to english."
+  columns:
+    - name: product_category_name
+      data_type: varchar
+      description: "This is a primary key for this table - Category name in Portuguese"
+      tests:
+      - unique
+      - not_null 
+
+    - name: product_category_name_english
+      data_type: varchar
+      description: "Category name in English"
+
+- name: stg_products
+  description: "This table contains product data"
+  columns:
+    - name: product_id
+      data_type: varchar
+      description: "This is a primary key for this table - Unique product identifier"
+      tests:
+      - unique
+      - not_null
+
+    - name: product_category_name
+      data_type: varchar
+      description: "Root category of product, in Portuguese. Not FK to PCNT dataset, Will be Left Joining Later"
+
+    - name: product_name_length
+      data_type: number
+      description: "Number of characters extracted from the product name."
+
+    - name: product_description_length
+      data_type: number
+      description: "Number of characters extracted from the product description."
+
+    - name: product_photos_qty
+      data_type: number
+      description: "Number of product published photos"
+
+    - name: products_weight_g
+      data_type: number
+      description: "Product weight measured in grams."
+
+    - name: products_length_cm
+      data_type: number
+      description: "Product length measured in centimeters."
+
+    - name: products_height_cm
+      data_type: number
+      description: "Product height measured in centimeters."
+
+    - name: products_width_cm
+      data_type: number
+      description: "Product width measured in centimeters."
+
+- name: stg_sellers
+  description: ""
+  columns:
+    - name: seller_id
+      data_type: varchar
+      description: "This is a primary key for the table - Seller unique identifier"
+      tests:
+      - unique
+      - not_null
+      
+    - name: seller_zip_code_prefix
+      data_type: number
+      description: "First 5 digits of seller zip code"
+
+    - name: seller_city
+      data_type: varchar
+      description: "Seller city name"
+
+    - name: seller_state
+      data_type: varchar
+      description: "Seller state"
