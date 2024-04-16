@@ -258,15 +258,17 @@ These future developments aim to enhance the data architecture's capabilities, i
 [Go to TOC](#top)
 
 **dbt DAGs**
-![[dbtDAGs.png]]
+
+![dbtDAGs](https://github.com/AspiringDSer/Date-Warehouse-Implementation-in-Snowflake/assets/79289892/37890829-1596-41f8-b311-d57057ccf1ae)
   
 **Snowflake Source Tables**
-  ![[snowflake_source_tables.png]]
+
+![snowflake_source_tables](https://github.com/AspiringDSer/Date-Warehouse-Implementation-in-Snowflake/assets/79289892/1228b40e-f672-4a81-8539-9be9bb76bbe2)
 
 **Snowflake Staging Tables**
-![[snowflake_staging_tables.png]]
+
+![snowflake_staging_tables](https://github.com/AspiringDSer/Date-Warehouse-Implementation-in-Snowflake/assets/79289892/33b648e1-8188-48c9-8bc9-37e8d72ff6bb)
 
 **Snowflake Production Tables**
-![[snowflake_production_tables.png]]
 
-
+![snowflake_production_tables](https://github.com/AspiringDSer/Date-Warehouse-Implementation-in-Snowflake/assets/79289892/98ee8791-f166-4204-9f3c-bf9524ed0841)
