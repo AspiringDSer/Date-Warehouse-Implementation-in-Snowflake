@@ -1,6 +1,6 @@
 with source as (
 
-    select * from {{ source('src_snowflake', 's3_orders') }}
+    select * from {{ ref('snap_orders') }}
 
 ),
 
@@ -13,7 +13,10 @@ renamed as (
         order_purchase_timestamp::date as order_date,
         order_delivered_carrier_date::date as order_delivered_carrier_date,
         order_delivered_customer_date::date as order_delivered_customer_date,
-        order_estimated_delivery_date::date as order_estimated_delivery_date
+        order_estimated_delivery_date::date as order_estimated_delivery_date,
+        dbt_updated_at,
+        dbt_valid_from,
+        dbt_valid_to
 
     from source
 

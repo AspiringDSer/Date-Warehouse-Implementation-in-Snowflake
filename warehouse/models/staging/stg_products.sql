@@ -1,6 +1,6 @@
 with source as (
 
-    select * from {{ source('src_snowflake', 's3_products') }}
+    select * from {{ ref('snap_products') }}
 
 ),
 
@@ -15,7 +15,10 @@ renamed as (
         products_weight_g,
         products_length_cm,
         products_height_cm,
-        products_width_cm
+        products_width_cm,
+        dbt_updated_at,
+        dbt_valid_from,
+        dbt_valid_to
 
     from source
 

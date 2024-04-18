@@ -1,6 +1,6 @@
 with source as (
 
-    select * from {{ source('src_snowflake', 's3_order_items') }}
+    select * from {{ ref('snap_order_items') }}
 
 ),
 
@@ -15,7 +15,10 @@ renamed as (
         price AS price_BR,
         round((price * 0.27), 2) AS price_CAD,
         freight_value AS freight_value_BR,
-        round((freight_value * 0.27), 2) AS freight_value_CAD
+        round((freight_value * 0.27), 2) AS freight_value_CAD,
+        dbt_updated_at,
+        dbt_valid_from,
+        dbt_valid_to
 
     from source
 

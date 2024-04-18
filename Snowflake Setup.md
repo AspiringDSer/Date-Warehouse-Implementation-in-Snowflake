@@ -1,6 +1,6 @@
-# Snowflake Environment Setup
+# Introduction and Environment Setup
 
-## Snowflake User Creation
+## Snowflake user creation
 Copy these SQL statements into a Snowflake Worksheet, select all and execute them (i.e. pressing the play button).
 
 ```sql
@@ -40,7 +40,7 @@ GRANT ALL ON FUTURE TABLES IN SCHEMA OLIST.SOURCE to ROLE DBT_ROLE;
 
 ```
 
-## Snowflake Data Import
+## Snowflake data import
 
 Copy these SQL statements into a Snowflake Worksheet, select all and execute them (i.e. pressing the play button).
 
@@ -56,7 +56,9 @@ CREATE OR REPLACE TABLE s3_customers
      customer_unique_id VARCHAR(32),
      customer_zip_code_prefix INTEGER,
      customer_city STRING,
-     customer_state STRING);
+     customer_state STRING,
+     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
 
 COPY INTO s3_customers (customer_id,
                          customer_unique_id,
@@ -71,7 +73,9 @@ CREATE OR REPLACE TABLE s3_geolocation
      geolocation_lat DOUBLE,
      geolocation_lng DOUBLE,
      geolocation_city STRING,
-     geolocation_state STRING);
+     geolocation_state STRING,
+     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
 
 COPY INTO s3_geolocation (geolocation_zip,
                            geolocation_lat,
@@ -90,6 +94,8 @@ CREATE OR REPLACE TABLE s3_orders
      order_delivered_carrier_date TIMESTAMP,
      order_delivered_customer_date TIMESTAMP,
      order_estimated_delivery_date TIMESTAMP,
+     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
      FOREIGN KEY (customer_id) REFERENCES s3_customers(customer_id));
 
 COPY INTO s3_orders (order_id,
@@ -109,6 +115,8 @@ CREATE OR REPLACE TABLE s3_order_payments
      payment_type STRING,
      payment_installments INTEGER,
      payment_value NUMBER(8, 2),
+     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
      FOREIGN KEY (order_id) REFERENCES s3_orders(order_id));
 
 COPY INTO s3_order_payments (order_id,
@@ -128,6 +136,8 @@ CREATE OR REPLACE TABLE s3_order_reviews
      review_comment_message STRING,
      review_creation_date TIMESTAMP,
      review_answer_timestamp TIMESTAMP,
+     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,    
      FOREIGN KEY (order_id) REFERENCES s3_orders(order_id));
 
 COPY INTO s3_order_reviews (review_id,
@@ -149,7 +159,9 @@ CREATE OR REPLACE TABLE s3_products
      products_weight_g INTEGER,
      products_length_cm INTEGER,
      products_height_cm INTEGER,
-     products_width_cm INTEGER);
+     products_width_cm INTEGER,
+     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
 
 COPY INTO s3_products (product_id,
                         product_category_name,
@@ -167,7 +179,9 @@ CREATE OR REPLACE TABLE s3_sellers
     (seller_id VARCHAR(32) PRIMARY KEY,
      seller_zip_code_prefix INTEGER,
      seller_city STRING,
-     seller_state STRING);
+     seller_state STRING,
+     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
 
 COPY INTO s3_sellers (seller_id,
                        seller_zip_code_prefix,
@@ -178,7 +192,9 @@ COPY INTO s3_sellers (seller_id,
 
 CREATE OR REPLACE TABLE s3_product_category_name_translation (
      product_category_name STRING PRIMARY KEY,
-     product_category_name_english STRING);
+     product_category_name_english STRING,
+     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
 
 COPY INTO s3_product_category_name_translation (
      product_category_name,
@@ -194,6 +210,8 @@ CREATE OR REPLACE TABLE s3_order_items
      shipping_limit_date TIMESTAMP,
      price NUMBER(8, 2),
      freight_value NUMBER(8, 2),
+     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
      FOREIGN KEY (order_id) REFERENCES s3_orders(order_id),
      FOREIGN KEY (product_id) REFERENCES s3_products(product_id),
      FOREIGN KEY (seller_id) REFERENCES s3_sellers(seller_id));
@@ -206,5 +224,6 @@ COPY INTO s3_order_items (order_id,
                            price,
                            freight_value)
                    FROM 's3://jmah-public-data/olist/order_items.csv'
-                   FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1 FIELD_OPTIONALLY_ENCLOSED_BY = '"');                   
+                   FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1 FIELD_OPTIONALLY_ENCLOSED_BY = '"');
+                   
 ```

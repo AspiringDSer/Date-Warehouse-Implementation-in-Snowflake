@@ -7,7 +7,10 @@ select
     products_weight_g,
     products_length_cm,
     products_height_cm,
-    products_width_cm
+    products_width_cm,
+    dbt_updated_at,
+    dbt_valid_from,
+    dbt_valid_to
 
 from {{ ref('stg_products') }}
 JOIN {{ ref('stg_product_category_name_translation') }}
