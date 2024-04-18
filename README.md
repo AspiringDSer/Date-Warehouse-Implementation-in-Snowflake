@@ -13,6 +13,7 @@
 5. [Data Warehouse Architecture](#Data-Warehouse-Architecture)
 	1. [Architecture Components](#5.1)
 	2. [Analytical Tool](#5.2)
+	3. [Slowly Changing Dimensions in dbt](#5.3)
 6. [Queries](#Queries)
 	1. [Staging Tables](#6.1)
 	2. [Production Tables](#6.2)
@@ -24,15 +25,15 @@
 # Project Overview
 [Go to TOC](#top)
 
-This project demonstrates the construction of a scalable and efficient data warehousing solution using Snowflake, AWS S3, SQL, and DBT.
+This project demonstrates the construction of a scalable and efficient data warehousing solution using Snowflake, AWS S3, SQL, and dbt.
 
-**Objective**: The primary objective of this project is to demonstrate my ability to design and implement a robust data warehouse solution. By storing a large-scale dataset in AWS S3, orchestrating an ELT pipeline to load data into Snowflake, and implementing Dimensional Data Modeling with DBT, I showcase my proficiency in handling complex data engineering tasks.
+**Objective**: The primary objective of this project is to demonstrate my ability to design and implement a robust data warehouse solution. By storing a large-scale dataset in AWS S3, orchestrating an ELT pipeline to load data into Snowflake, and implementing Dimensional Data Modeling with dbt, I showcase my proficiency in handling complex data engineering tasks.
 
 **Key Highlights**:
 
 - **Data Storage Optimization**: I optimized storage efficiency in AWS S3 for scalability and future data processing needs.
 - **ELT Pipeline Orchestration**: I used SQL to extract and load data into Snowflake, enabling data transformation and modeling workflows.
-- **Data Warehouse Architecture**: I designed and implemented a data warehouse using DBT, managing Slowly Changing Dimensions and documenting the data model for efficient testing and maintenance.
+- **Data Warehouse Architecture**: I designed and implemented a data warehouse using dbt, managing Slowly Changing Dimensions and documenting the data model for efficient testing and maintenance.
 
 ![ELT Architecture](https://github.com/AspiringDSer/Date-Warehouse-Implementation-in-Snowflake/assets/79289892/cde069eb-0e63-416b-8eb5-cec0709f9075)
 
@@ -73,7 +74,7 @@ Extracting data from Amazon S3 provides a real-world experience for the project,
 # ELT Process  
 [Go to TOC](#top)
 
-The ELT (Extract, Load, Transform) process for this project involves extracting data from a public S3 bucket (`jmah-public-data/olist/`) and loading it into Snowflake as source tables. The data loaded from AWS S3 is then staged and modeled using DBT (Data Build Tool) with a dimensional data modeling approach.
+The ELT (Extract, Load, Transform) process for this project involves extracting data from a public S3 bucket (`jmah-public-data/olist/`) and loading it into Snowflake as source tables. The data loaded from AWS S3 is then staged and modeled using dbt (Data Build Tool) with a dimensional data modeling approach.
 
 <a name='4.1'></a>
 ## Snowflake User Creation
@@ -130,18 +131,18 @@ For instructions on importing data into Snowflake, refer to `Snowflake Setup.md`
 
 ![ELT Architecture](https://github.com/AspiringDSer/Date-Warehouse-Implementation-in-Snowflake/assets/79289892/cde069eb-0e63-416b-8eb5-cec0709f9075)
 
-The ELT data architecture involves storing dataset files in Amazon S3, extracting data using SQL queries, and loading it into Snowflake. The loaded data is converted into source tables, and DBT is used for staging, data modeling, and managing Slowly Changing Dimensions.
+The ELT data architecture involves storing dataset files in Amazon S3, extracting data using SQL queries, and loading it into Snowflake. The loaded data is converted into source tables, and dbt is used for staging, data modeling, and managing Slowly Changing Dimensions.
 
 <a name='5.1'></a>
 ## Architecture Components
 
 1. **Data Extraction**: Dataset files are stored in Amazon S3.
 2. **Data Loading**: Data is extracted from S3 using SQL queries and loaded into Snowflake.
-3. **Data Transformation**: DBT is used for creating the staging layer and performing data modeling.
+3. **Data Transformation**: dbt is used for creating the staging layer and performing data modeling.
 4. **Data Modeling**: Data is modeled using Data Dimensional Modeling principles to create the data warehouse in Snowflake.
-5. **Slowly Changing Dimensions**: DBT is utilized for managing Slowly Changing Dimensions.
-6. **Documentation**: DBT is also used for data model documentation, ensuring the data warehouse is well-documented.
-7. **Version Control**: GitHub is used for version control to track changes to DBT projects and collaborate with team members.
+5. **Slowly Changing Dimensions**: dbt is utilized for managing Slowly Changing Dimensions.
+6. **Documentation**: dbt is also used for data model documentation, ensuring the data warehouse is well-documented.
+7. **Version Control**: GitHub is used for version control to track changes to dbt projects and collaborate with team members.
 
 <a name='5.2'></a>
 ## Analytical Tool
@@ -149,6 +150,51 @@ The ELT data architecture involves storing dataset files in Amazon S3, extractin
 Once the production layer is complete, Power BI is used as the analytical tool for visualizing and analyzing the data stored in Snowflake.
 
 This architecture enables efficient data processing and analysis, ensuring that the data warehouse is optimized for analytics and reporting purposes.
+
+<a name='5.3'></a>
+## Slowly Changing Dimensions in dbt
+
+The Ecommerce dataset inherently exhibits characteristics of SCD Type 2 changes, where stakeholders and analysts are keen on reviewing historical data changes.
+### Implementation Details
+
+To manage SCD Type 2 changes, I leveraged dbt to create snapshot tables. Within the snapshot block, it's crucial to specify:
+
+1. The unique key for the table (dimension) that dbt will use to identify a unique row.
+2. The strategy for detecting changes, which can be either "timestamp" (utilizing an updated_at column) or "check" (comparing specific columns)."
+### Example Scenario
+
+For instance, consider a scenario where a product's price changes over time in the Ecommerce dataset. By using dbt snapshot tables, I captured these changes by creating a new record for the product with the updated price, while maintaining the previous record as historical. This allows analysts to track the price changes for each product over time.
+
+``` sql
+{# The s3_order_items table contains data on product prices. #}
+{# We create a snapshot table to capture price changes by creating a new record for #}
+{# the product with the updated price, while maintaining the previous record as historical. #}
+
+{# Configuration settings for the snapshot #}
+{% snapshot snap_order_items %}
+{{
+    config(
+        target_database='OLIST',            
+        target_schema='SNAPSHOTS',          
+        unique_key='order_id',              
+
+        strategy='timestamp',               
+        updated_at='updated_at'            
+    )
+}}
+
+{# SQL query to select data from the source table #}
+select * from {{ source('src_snowflake', 's3_order_items') }}
+
+{% endsnapshot %}
+```
+
+### Benefits and Impact
+
+The use of dbt snapshot tables for managing SCD Type 2 changes provides several benefits, including improved data integrity, simplified historical data analysis, and enhanced reporting capabilities. Stakeholders can easily access and analyze historical data changes, leading to better-informed business decisions.
+
+### Slowly Changing Dimensions
+For detailed explanations of Slowly Changing Dimension (SCD) types 1, 2, and 3, please see the [Appendix](#Appendix).
 
 <a name='Queries'></a>
 # Queries 
@@ -159,11 +205,11 @@ Below are example SQL queries used for creating and transforming staging and pro
 <a name='6.1'></a>
 ## Staging Tables
 
-Data Transformation in `stg_order_reviews` Staging Table
+Data Transformation in `stg_order_items` Staging Table
 ```sql
 with source as (
     select * 
-    from {{ source('src_snowflake', 's3_order_items') }}
+    from {{ ref('snap_order_items') }}
 ),
 
 renamed as (
@@ -177,7 +223,10 @@ renamed as (
         price AS price_BR,
         round((price * 0.27), 2) AS price_CAD,
         freight_value AS freight_value_BR,
-        round((freight_value * 0.27), 2) AS freight_value_CAD
+        round((freight_value * 0.27), 2) AS freight_value_CAD,
+        dbt_updated_at,
+        dbt_valid_from,
+        dbt_valid_to
         
     from source
     
@@ -201,7 +250,10 @@ select
     products_weight_g,
     products_length_cm,
     products_height_cm,
-    products_width_cm
+    products_width_cm,
+	dbt_updated_at,
+	dbt_valid_from,
+	dbt_valid_to
 from {{ ref('stg_products') }}
 JOIN {{ ref('stg_product_category_name_translation') }}
     ON stg_products.product_category_name =   stg_product_category_name_translation.product_category_name
@@ -216,7 +268,7 @@ Ensuring data quality is crucial for maintaining the integrity of the data in ou
 In the staging layer, we setup 18 tests to check all the tables data quality. For more details check out `schema.yml` under the warehouse/models/staging/ folder. 
 ## Overview
 
-We use DBT's `schema.yml` file to define and configure these data quality checks. This file contains the metadata for each table, including column definitions, descriptions, and the tests to be performed.
+We use dbt's `schema.yml` file to define and configure these data quality checks. This file contains the metadata for each table, including column definitions, descriptions, and the tests to be performed.
 ### Example Data Quality Checks
 
 Here are some examples of the data quality checks we perform on the `stg_orders` table:
@@ -265,10 +317,32 @@ These future developments aim to enhance the data architecture's capabilities, i
 
 ![snowflake_source_tables](https://github.com/AspiringDSer/Date-Warehouse-Implementation-in-Snowflake/assets/79289892/1228b40e-f672-4a81-8539-9be9bb76bbe2)
 
-**Snowflake Staging Tables**
+**Snowflake Snapshot Tables**
+
+**Snowflake Staging Views**
 
 ![snowflake_staging_tables](https://github.com/AspiringDSer/Date-Warehouse-Implementation-in-Snowflake/assets/79289892/33b648e1-8188-48c9-8bc9-37e8d72ff6bb)
 
 **Snowflake Production Tables**
 
 ![snowflake_production_tables](https://github.com/AspiringDSer/Date-Warehouse-Implementation-in-Snowflake/assets/79289892/98ee8791-f166-4204-9f3c-bf9524ed0841)
+
+**Slowly Changing Dimensions** 
+
+Type 1 Slowly Changing Dimension (SCD)
+
+- **Definition:** In Type 1 SCD, the dimension attribute is updated directly, overwriting the existing value with the new one.
+- **Example:** If a customer changes their email address, the existing email address in the customer dimension table would be updated directly with the new email address.
+- **Impact:** This change is immediate and does not retain any historical information. It is useful for attributes that are not expected to change frequently and do not require historical tracking.
+
+Type 2 Slowly Changing Dimension (SCD)
+
+- **Definition:** In Type 2 SCD, a new record is added to the dimension table to represent the change, while the original record is marked as historical.
+- **Example:** If a customer changes their name, a new record with the updated name is added to the customer dimension table, while the original record is marked as historical with an end date.
+- **Impact:** This approach retains historical information and allows analysis of data changes over time. It is suitable for attributes where historical tracking is important.
+
+Type 3 Slowly Changing Dimension (SCD)
+
+- **Definition:** In Type 3 SCD, the dimension table contains columns to store both the current and previous values of an attribute.
+- **Example:** If a product's price changes, the product dimension table would have columns for both the current price and the previous price.
+- **Impact:** This approach allows easy access to both current and historical information but is limited in the number of changes that can be tracked for an attribute.
