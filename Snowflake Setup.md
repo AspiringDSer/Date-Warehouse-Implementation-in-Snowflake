@@ -1,6 +1,6 @@
 # Introduction and Environment Setup
 
-## Snowflake user creation
+## Snowflake User Creation
 Copy these SQL statements into a Snowflake Worksheet, select all and execute them (i.e. pressing the play button).
 
 ```sql
@@ -40,7 +40,7 @@ GRANT ALL ON FUTURE TABLES IN SCHEMA OLIST.SOURCE to ROLE DBT_ROLE;
 
 ```
 
-## Snowflake data import
+## Snowflake Data Import
 
 Copy these SQL statements into a Snowflake Worksheet, select all and execute them (i.e. pressing the play button).
 
