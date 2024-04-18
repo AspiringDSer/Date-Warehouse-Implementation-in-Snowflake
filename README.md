@@ -309,24 +309,6 @@ These future developments aim to enhance the data architecture's capabilities, i
 # Appendix
 [Go to TOC](#top)
 
-**dbt DAGs**
-
-![dbtDAGs](https://github.com/AspiringDSer/Date-Warehouse-Implementation-in-Snowflake/assets/79289892/37890829-1596-41f8-b311-d57057ccf1ae)
-  
-**Snowflake Source Tables**
-
-![snowflake_source_tables](https://github.com/AspiringDSer/Date-Warehouse-Implementation-in-Snowflake/assets/79289892/1228b40e-f672-4a81-8539-9be9bb76bbe2)
-
-**Snowflake Snapshot Tables**
-
-**Snowflake Staging Views**
-
-![snowflake_staging_tables](https://github.com/AspiringDSer/Date-Warehouse-Implementation-in-Snowflake/assets/79289892/33b648e1-8188-48c9-8bc9-37e8d72ff6bb)
-
-**Snowflake Production Tables**
-
-![snowflake_production_tables](https://github.com/AspiringDSer/Date-Warehouse-Implementation-in-Snowflake/assets/79289892/98ee8791-f166-4204-9f3c-bf9524ed0841)
-
 **Slowly Changing Dimensions** 
 
 Type 1 Slowly Changing Dimension (SCD)
@@ -346,3 +328,23 @@ Type 3 Slowly Changing Dimension (SCD)
 - **Definition:** In Type 3 SCD, the dimension table contains columns to store both the current and previous values of an attribute.
 - **Example:** If a product's price changes, the product dimension table would have columns for both the current price and the previous price.
 - **Impact:** This approach allows easy access to both current and historical information but is limited in the number of changes that can be tracked for an attribute.
+
+**dbt DAGs**
+
+![dbtDAGs](https://github.com/AspiringDSer/Date-Warehouse-Implementation-in-Snowflake/assets/79289892/a86f2863-8318-4934-98d4-83128fe7d934)
+  
+**Snowflake Source Tables**
+
+![snowflake_source_tables](https://github.com/AspiringDSer/Date-Warehouse-Implementation-in-Snowflake/assets/79289892/589a1bcd-933c-473a-a75e-d7d4c8fcf32a)
+
+**Snowflake Snapshot Tables**
+
+![snowflake_snapshot_tables](https://github.com/AspiringDSer/Date-Warehouse-Implementation-in-Snowflake/assets/79289892/c9076e23-2065-438c-9671-d270ee858287)
+
+**Snowflake Staging Views**
+
+![snowflake_staging_tables](https://github.com/AspiringDSer/Date-Warehouse-Implementation-in-Snowflake/assets/79289892/50f8152f-0108-4cbd-a0f3-1a4dc326c118)
+
+**Snowflake Production Tables**
+
+![snowflake_production_tables](https://github.com/AspiringDSer/Date-Warehouse-Implementation-in-Snowflake/assets/79289892/e8a9ba74-4bda-4f04-8017-ccf6bffc7b64)
